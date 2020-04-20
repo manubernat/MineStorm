@@ -43,3 +43,4 @@ function DessineTirs()
         love.graphics.circle("fill", tirs[i].x, tirs[i].y, 4)
     end
 end
+

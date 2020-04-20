@@ -1,5 +1,5 @@
-VaisseauX = 400
-VaisseauY = 300
+VaisseauX = largeurEcran/2
+VaisseauY = hauteurEcran/2
 VaisseauAngle = 0
 VaisseauImage = love.graphics.newImage("vaisseau.png")
 VaisseauOffsetX = VaisseauImage:getWidth() / 2
@@ -8,7 +8,7 @@ VaisseauDX = 0
 VaisseauDY = 0
 DelaiTeleportation = 0
 
-Acceleration = 70
+Acceleration = 40
 Decceleration = 0.95
 
 function DessineVaisseau()

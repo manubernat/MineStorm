@@ -9,10 +9,17 @@ function CreeMines()
             dy = math.random(-40,40),
             r = 5,
             type = "float", -- "float", "fireball, "magnetic", "magfire"
-            active = (i<5)  -- active les 4 premières mines à la création
+            active = (i<5),  -- active les 4 premières mines à la création
+            score = 100
         }
-        if (i<13) then mine.r = 10 end
-        if (i<5) then mine.r = 15 end
+        if (i<13) then 
+            mine.r = 10
+            mine.score = 200 
+        end
+        if (i<5) then 
+            mine.r = 15
+            mine.score = 300
+        end
 
         table.insert(mines,mine)
     end
@@ -42,6 +49,12 @@ function DeplaceMines( dt )
             if mines[i].x>largeurEcran then mines[i].x=0 end
             if mines[i].y<0 then mines[i].y=hauteurEcran end
             if mines[i].y>hauteurEcran then mines[i].y=0 end
+
+            -- Mines magnetiques
+            if mines[i].type=="magnetic" or mines[i].type=="magfire" then
+                mines[i].dx = math.ceil(VaisseauX - mines[i].x) 
+                mines[i].dy = math.ceil(VaisseauY - mines[i].y) 
+            end
         end
     end
 end
