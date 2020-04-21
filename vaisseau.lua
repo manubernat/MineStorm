@@ -8,8 +8,13 @@ VaisseauDX = 0
 VaisseauDY = 0
 DelaiTeleportation = 0
 
-Acceleration = 40
-Decceleration = 0.95
+Acceleration = 5
+VMax = 400
+
+-- Decceleration de 97% de la vitesse toutes les 0.01 secondes
+Decceleration = 0.97
+SeuilDec = 0.01
+DelaiDec = 0
 
 function DessineVaisseau()
     love.graphics.setColor(1,1,1)
@@ -17,8 +22,17 @@ function DessineVaisseau()
 end
 
 function AccelereVaisseau()
-    VaisseauDX = VaisseauDX + Acceleration * math.sin(VaisseauAngle)
-    VaisseauDY = VaisseauDY + Acceleration * math.cos(VaisseauAngle+math.pi)
+    if VaisseauDX<VMax then VaisseauDX = VaisseauDX + (Acceleration * math.sin(VaisseauAngle)) end
+    if VaisseauDY<VMax then VaisseauDY = VaisseauDY + (Acceleration * math.cos(VaisseauAngle+math.pi)) end
+end
+
+function FreineVaisseau(dt)
+    DelaiDec = DelaiDec + dt
+    if DelaiDec>SeuilDec then
+        VaisseauDX = VaisseauDX * Decceleration
+        VaisseauDY = VaisseauDY * Decceleration
+        DelaiDec = 0
+    end
 end
 
 function TourneVaisseau( sens, dt )
@@ -30,6 +44,8 @@ function TeleporteVaisseau()
         -- Warp aléatoire
         VaisseauX = math.random(largeurEcran)
         VaisseauY = math.random(hauteurEcran)
+        VaisseauDX = 0
+        VaisseauDY = 0
         DelaiTeleportation = 4   -- nombre de secondes de cooldown
     end
 end
@@ -39,8 +55,7 @@ function DeplaceVaisseau( dt )
         VaisseauX = VaisseauX + (VaisseauDX*dt)
         VaisseauY = VaisseauY + (VaisseauDY*dt)
         -- Freinage
-        VaisseauDX = VaisseauDX * Decceleration
-        VaisseauDY = VaisseauDY * Decceleration
+        FreineVaisseau(dt)
         -- Warp cooldown
         DelaiTeleportation = DelaiTeleportation - dt
         -- Ecran traversable

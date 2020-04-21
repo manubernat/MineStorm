@@ -19,7 +19,7 @@ function love.load()
     require("tirs")
     require("mines")
 
-    CreeMines()
+    CreeMines("ABCD")
 end
 
 function love.draw()
@@ -40,6 +40,7 @@ function love.update( dt )
 end
 
 function UpdateJeu(dt)
+    lastdt = dt
     -- Traitement des commandes
     if love.keyboard.isDown("up") then AccelereVaisseau() end
     if love.keyboard.isDown("left") then TourneVaisseau(-1, dt) end
@@ -75,12 +76,16 @@ function AfficheInfo()
         vies = vies .. "🚀"
     end
 
+    dbg = "\ndx = " .. VaisseauDX .. "\ndy = " .. VaisseauDY .. "\ndt = " .. lastdt
+
+    love.graphics.setColor(1,1,1)
     love.graphics.print("score : " .. score ..
                         "\nvies : " .. vies ..
-                        "\ntéléportation : " .. tp,10, 10)
+                        "\ntéléportation : " .. tp .. dbg,10, 10)
 end
 
 function DessineDebut()
+    love.graphics.setColor(1,1,1)
     love.graphics.print("high score : "..highscore ..
                         "\npressez 's' pour commencer",10,10)
 end
@@ -90,7 +95,9 @@ function Distance( x1, y1, x2, y2)
 end
 
 function Collisions()
+    mineEncoreActive = false
     for j=1, #mines do
+        mineEncoreActive = mineEncoreActive or mines[j].active
         -- mines et tirs
         for i=1, #tirs do
             if mines[j].active and Distance(mines[j].x,mines[j].y,tirs[i].x,tirs[i].y)<mines[j].r then
@@ -100,19 +107,21 @@ function Collisions()
                 mines[j].y = math.random(hauteurEcran)
     
                 score = score + mines[j].score
+                if score>highscore then 
+                    highscore = score 
+                end
 
                 -- active les mines "filles"
                 if j<12 then
                     mines[2*j+3].active = true
                     mines[2*j+4].active = true
                 end
-            end
+             end
         end
         -- mines et vaisseau
         if mines[j].active and Distance(mines[j].x,mines[j].y,VaisseauX,VaisseauY)<mines[j].r then
             lives = lives - 1
             if lives==0 then
-                if score>highscore then highscore = score end
                 etat = "debut"
             else
                 VaisseauX = largeurEcran/2
@@ -120,5 +129,10 @@ function Collisions()
                 VaisseauAngle = 0
             end
         end
+    end
+
+    -- plus de mine active => fin du niveau
+    if mineEncoreActive==false then
+        etat = "debut"
     end
 end

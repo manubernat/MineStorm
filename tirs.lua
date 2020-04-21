@@ -9,11 +9,11 @@ function AjouteTir( xinit, yinit, dxinit, dyinit )
             y = yinit,
             dx = dxinit + VitesseTir * math.sin(VaisseauAngle),
             dy = dyinit + VitesseTir * math.cos(VaisseauAngle+math.pi),
-            vie = 1
+            vie = 1 -- duree de vie d'un tir (1 sec)
         }
         table.insert(tirs,tir)
 
-        DelaiTir = 0.1
+        DelaiTir = 0.2
     end
 end
 
